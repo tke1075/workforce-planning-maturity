@@ -120,12 +120,13 @@ export default function Page() {
     let count = 0;
     Object.keys(formData).forEach((cat) => {
       const selection = formData[cat];
-      // We assume the option's value starts with the key used in scoreMapping.
-      // For example: "Ad Hoc - Workforce planning is reactive..." → "Ad Hoc"
-      const key = selection.split(" - ")[0];
-      if (selection && scoreMapping[cat] && scoreMapping[cat][key]) {
-        total += scoreMapping[cat][key];
-        count++;
+      if (selection) {
+        // Extract the key from the selection string (e.g., "Ad Hoc" from "Ad Hoc - ...").
+        const key = selection.split(" - ")[0];
+        if (scoreMapping[cat] && scoreMapping[cat][key]) {
+          total += scoreMapping[cat][key];
+          count++;
+        }
       }
     });
     const avg = count > 0 ? (total / count).toFixed(1) : 0;
@@ -135,10 +136,7 @@ export default function Page() {
   // Handle form submission: send data to API and update result summary.
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const data = {
-      email,
-      ...formData,
-    };
+    const data = { email, ...formData };
 
     try {
       const response = await fetch("/api/send-email", {
@@ -154,9 +152,7 @@ export default function Page() {
     }
   };
 
-  // ---------------------------
-  // Return Block with Enhanced Styling using Bootstrap
-  // ---------------------------
+  // Return Block with Enhanced Styling using Bootstrap.
   return (
     <div className="container my-5">
       <div className="card p-4 shadow-sm">
@@ -218,8 +214,8 @@ export default function Page() {
               <strong>Average Score:</strong> {averageScore} / 10
             </p>
             <p>
-              Detailed 30-60-90 day plans based on your selections has been
-              emailed to you.
+              Detailed 30-60-90 day plans based on your selections has been emailed
+              to you.
             </p>
           </div>
         )}
